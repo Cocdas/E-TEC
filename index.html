@@ -1,7 +1,8 @@
+
 <!DOCTYPE html>
 <html lang="si">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8">
   <title>Login</title>
   <style>
     body {
@@ -48,42 +49,31 @@
   <div class="container">
     <h2>Login</h2>
     <form id="loginForm">
-      <input name="username" placeholder="Username" required /><br />
-      <input type="password" name="password" placeholder="Password" required /><br />
+      <input name="username" placeholder="Username" required>
+      <input type="password" name="password" placeholder="Password" required>
       <button type="submit">Login</button>
     </form>
-    <p id="login-message"></p>
+    <p id="message"></p>
     <p>Account එකක් නැද්ද? <a href="signup.html">Sign Up</a></p>
   </div>
 
   <script>
-    document.getElementById('loginForm').addEventListener('submit', async function(event) {
-      event.preventDefault();
-      
-      const formData = new FormData(event.target);
-      const credentials = {
-        username: formData.get('username'),
-        password: formData.get('password')
-      };
-      
+    document.getElementById("loginForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const formData = new FormData(e.target);
+      const credentials = Object.fromEntries(formData.entries());
+
       try {
-        const response = await fetch('check_login.php', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
+        const response = await fetch("/api/login", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify(credentials)
         });
-        
         const result = await response.json();
-        
-        if (result.success) {
-          window.location.href = 'dizer.html';
-        } else {
-          document.getElementById('login-message').textContent = result.message || 'Username හෝ Password වැරදියි';
-        }
+        if (result.success) window.location.href = "dashboard.html";
+        else document.getElementById("message").textContent = result.error;
       } catch (error) {
-        document.getElementById('login-message').textContent = 'දෝෂයක් ඇතිවිය: ' + error.message;
+        document.getElementById("message").textContent = "දෝෂයක් ඇතිවිය!";
       }
     });
   </script>
