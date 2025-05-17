@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="si">
+<head>
+  <meta charset="UTF-8" />
+  <title>Login</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to right, #00c6ff, #0072ff);
+      color: #fff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+    .container {
+      background-color: rgba(0, 0, 0, 0.3);
+      padding: 40px;
+      border-radius: 15px;
+      text-align: center;
+      box-shadow: 0 0 10px rgba(255,255,255,0.2);
+    }
+    input, button {
+      margin: 10px;
+      padding: 12px;
+      width: 250px;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+    }
+    input {
+      background-color: #f0f0f0;
+      color: #000;
+    }
+    button {
+      background-color: #ffcc00;
+      color: #000;
+      cursor: pointer;
+    }
+    a {
+      color: #ffcc00;
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Login</h2>
+    <form id="loginForm">
+      <input name="username" placeholder="Username" required /><br />
+      <input type="password" name="password" placeholder="Password" required /><br />
+      <button type="submit">Login</button>
+    </form>
+    <p id="login-message"></p>
+    <p>Account එකක් නැද්ද? <a href="signup.html">Sign Up</a></p>
+  </div>
+
+  <script>
+    document.getElementById('loginForm').addEventListener('submit', async function(event) {
+      event.preventDefault();
+      
+      const formData = new FormData(event.target);
+      const credentials = {
+        username: formData.get('username'),
+        password: formData.get('password')
+      };
+      
+      try {
+        const response = await fetch('check_login.php', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(credentials)
+        });
+        
+        const result = await response.json();
+        
+        if (result.success) {
+          window.location.href = 'dizer.html';
+        } else {
+          document.getElementById('login-message').textContent = result.message || 'Username හෝ Password වැරදියි';
+        }
+      } catch (error) {
+        document.getElementById('login-message').textContent = 'දෝෂයක් ඇතිවිය: ' + error.message;
+      }
+    });
+  </script>
+</body>
+</html>
